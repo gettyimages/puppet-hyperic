@@ -1,11 +1,8 @@
 name    'getty-hyperic'
-version '0.0.1'
-source 'UNKNOWN'
-author 'getty'
-license 'Apache License, Version 2.0'
-summary 'UNKNOWN'
-description 'UNKNOWN'
-project_page 'UNKNOWN'
-
-## Add dependencies, if any:
-# dependency 'username/name', '>= 1.2.0'
+version '1.0.0'
+source 'git://github.com/curator/puppet-hyperic'
+author 'GettyImages'
+license 'MIT'
+summary 'vFabric Hyperic Module'
+description 'vFabric Hyperic Module'
+project_page 'https://github.com/curator/puppet-hyperic'
