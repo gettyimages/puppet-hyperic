@@ -1,0 +1,4 @@
+fixtures:
+  repositories: []
+  symlinks:
+    hyperic: "#{source_dir}"
