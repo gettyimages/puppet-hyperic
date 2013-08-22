@@ -22,4 +22,4 @@ The vFabric Hyperic module allows you to install and configure the vFabric Hyper
     use_vmware_repo =>  true,
     setup_server    =>  'hyperic.server.local',
     java_home       =>  '/usr/java/latest,
-`  }
+  }`
