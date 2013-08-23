@@ -7,4 +7,8 @@ group :test do
   gem 'rspec-system-puppet'
   gem 'serverspec'
   gem 'travis'
+  gem 'vagrant-fixed-ssh'
+  gem "rspec-system-serverspec"
+  gem "rspec-system-puppet"
+
 end
