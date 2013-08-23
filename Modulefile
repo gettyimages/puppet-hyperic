@@ -1,5 +1,5 @@
 name    'getty-hyperic'
-version '1.0.1'
+version '1.0.2'
 source 'git://github.com/curator/puppet-hyperic'
 author 'preston.norvell@gettyimages.com'
 license 'MIT'
