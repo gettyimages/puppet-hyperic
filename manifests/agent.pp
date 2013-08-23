@@ -2,20 +2,20 @@
 #
 #
 class hyperic::agent (
-  $use_vmware_repo      = hiera('hyperic::agent::use_vmware_repo', false),
-  $setup_server         = hiera('hyperic::agent::setup_server', 'localhost'),
-  $setup_port           = hiera('hyperic::agent::setup_port', '7080' ),
-  $setup_sslport        = hiera('hyperic::agent::setup_sslport', '7443'),
-  $setup_login          = hiera('hyperic::agent::setup_login', 'hqadmin'),
-  $setup_password       = hiera('hyperic::agent::setup_password', 'hqadmin'),
-  $setup_unidirectional = hiera('hyperic::agent::setup_unidirectional', 'No'),
-  $setup_secure         = hiera('hyperic::agent::setup_secure', 'Yes'),
-  $setup_ip             = hiera('hyperic::agent::setup_ip', '*default*'),
-  $setup_port           = hiera('hyperic::agent::setup_port', '*default*'),
-  $setup_resetuptoken   = hiera('hyperic::agent::setup_resetuptoken', 'no'),
-  $setup_unverifiedcerts = hiera('hyperic::agent::setup_unverifiedcerts', 'yes'),
-  $java_home            = hiera('hyperic::agent::java_home', '/usr/lib/jvm/jre'),
-  $unix_jdk_package     = hiera('hyperic::agent::unix_jdk_package', 'java-1.7.0-openjdk-devel'),
+  $use_vmware_repo        = false,
+  $setup_server           = 'localhost',
+  $setup_port             = '7080' ,
+  $setup_sslport          = '7443',
+  $setup_login            = 'hqadmin',
+  $setup_password         = 'hqadmin',
+  $setup_unidirectional   = 'No',
+  $setup_secure           = 'Yes',
+  $setup_ip               = '*default*',
+  $setup_port             = '*default*',
+  $setup_resetuptoken     = 'no',
+  $setup_unverifiedcerts  = 'yes',
+  $java_home              = '/usr/lib/jvm/jre',
+  $unix_jdk_package       = 'java-1.7.0-openjdk-devel',
 ) {
 
   if $::osfamily == 'RedHat' or $::operatingsystem == 'amazon' {
