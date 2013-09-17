@@ -1,6 +1,6 @@
 puppet-hyperic
 ==============
-[![Build Status](https://travis-ci.org/curator/puppet-hyperic.png)](https://travis-ci.org/curator/puppet-hyperic)
+[![Build Status](https://travis-ci.org/gettyimages/puppet-hyperic.png)](https://travis-ci.org/gettyimages/puppet-hyperic)
 
 ####Table of Contents
 
