@@ -48,11 +48,7 @@ class hyperic::agent (
       onlyif      => '/usr/bin/test ! -f /opt/hyperic/hyperic-hqee-agent/conf/agent.scu',
     }
 
-    if ! defined(Package[$unix_jdk_package]) {
-      package { $unix_jdk_package:
-        ensure => installed,
-      }
-    }
+    ensure_packages([$unix_jdk_package])
 
     file { '/etc/init.d/hyperic-hqee-agent':
       ensure  => file,

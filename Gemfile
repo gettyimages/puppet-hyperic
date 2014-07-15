@@ -10,5 +10,6 @@ group :test do
   gem 'vagrant-fixed-ssh'
   gem "rspec-system-serverspec"
   gem "rspec-system-puppet"
+  gem "puppetlabs_spec_helper"
 
 end
