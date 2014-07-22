@@ -17,7 +17,8 @@ class hyperic::agent (
   $java_home              = '/usr/lib/jvm/jre',
   $unix_jdk_package       = 'java-1.7.0-openjdk-devel',
   $vfabric_version        = '5.3',
-  $agent_user           = 'root',
+  $agent_user             = 'hyperic',
+  $agent_group            = 'vfabric',
 ) {
 
   if $::osfamily == 'RedHat' or $::operatingsystem == 'amazon' {
@@ -63,8 +64,8 @@ class hyperic::agent (
     file { '/opt/hyperic/hyperic-hqee-agent/conf/agent.properties':
       ensure  => file,
       replace => false,
-      owner   => hyperic,
-      group   => vfabric,
+      owner   => $agent_user,
+      group   => $agent_group,
       mode    => '0644',
       content => template("${module_name}/agent.properties.erb"),
     }
