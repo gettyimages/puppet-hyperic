@@ -16,6 +16,8 @@ class hyperic::agent (
   $setup_unverifiedcerts  = 'yes',
   $java_home              = '/usr/lib/jvm/jre',
   $unix_jdk_package       = 'java-1.7.0-openjdk-devel',
+  $vfabric_version        = '5.3',
+  $agent_user           = 'root',
 ) {
 
   if $::osfamily == 'RedHat' or $::operatingsystem == 'amazon' {
@@ -23,18 +25,18 @@ class hyperic::agent (
     if $use_vmware_repo {
 
       $yumrepo_url = $::operatingsystemrelease ? {
-        /6.?/ => 'http://repo.vmware.com/pub/rhel6/vfabric/5.3/$basearch',
-        /5.?/ => 'http://repo.vmware.com/pub/rhel5/vfabric/5.3/$basearch',
+        /6.?/ => "http://repo.vmware.com/pub/rhel6/vfabric/${vfabric_version}/$basearch",
+        /5.?/ => "http://repo.vmware.com/pub/rhel5/vfabric/${vfabric_version}/$basearch",
       }
 
-      yumrepo { 'vfabric-5.3':
+      yumrepo { "vfabric-${vfabric_version}":
         baseurl  => $yumrepo_url,
-        descr    => 'VMware vFabric 5.3 - $basearch',
+        descr    => "VMware vFabric ${vfabric_version} - $basearch",
         enabled  => '1',
         gpgcheck => '0',
       }
 
-      Yumrepo['vfabric-5.3'] -> Package['vfabric-hyperic-agent']
+      Yumrepo["vfabric-${vfabric_version}"] -> Package['vfabric-hyperic-agent']
     }
 
     package { 'vfabric-hyperic-agent':
