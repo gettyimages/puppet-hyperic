@@ -70,6 +70,13 @@ class hyperic::agent (
       content => template("${module_name}/agent.properties.erb"),
     }
 
+    # ensure permissions are correct
+    exec { "set_permissions":
+      command  => "/bin/chown -R ${agent_user}:${agent_group} /opt/hyperic",
+      require  => [ File["/opt/hyperic/hyperic-hqee-agent/conf/agent.properties"],
+                   Package["vfabric-hyperic-agent"] ]
+    }
+
     service { 'hyperic-hqee-agent':
       ensure  => running,
     }
