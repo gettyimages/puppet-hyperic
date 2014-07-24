@@ -78,7 +78,7 @@ class hyperic::agent (
     }
 
     service { 'hyperic-hqee-agent':
-      ensure  => running,
+      ensure  => stopped,
       require  => Exec["set_permissions"]
     }
 
