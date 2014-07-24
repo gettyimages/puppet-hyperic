@@ -12,7 +12,7 @@ class hyperic::agent (
   $setup_secure           = 'Yes',
   $setup_agentip          = '*default*',
   $setup_agentport        = '*default*',
-  $setup_resetuptoken     = 'no',
+  $setup_resetuptokens    = 'no',
   $setup_unverifiedcerts  = 'yes',
   $java_home              = '/usr/lib/jvm/jre',
   $unix_jdk_package       = 'java-1.7.0-openjdk-devel',
