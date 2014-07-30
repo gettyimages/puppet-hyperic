@@ -19,14 +19,15 @@ class hyperic::agent (
   $vfabric_version        = '5.3',
   $agent_user             = 'hyperic',
   $agent_group            = 'vfabric',
+  $hyperic_package_name   = 'vfabric-hyperic-agent', # Change to vcenter-hyperic-agent in newer versions
 ) {
 
   if $::osfamily == 'RedHat' or $::operatingsystem == 'amazon' {
 
     if $use_vmware_repo {
 
-      $yumrepo_url = $::operatingsystemrelease ? {
-        /6.?/ => "http://repo.vmware.com/pub/rhel6/vfabric/${vfabric_version}/\$basearch",
+      $yumrepo_url = $::operatingsystemrelease ?vfabric/$ {
+        /6.?/ => "http://repo.vmware.com/pub/rhel6/{vfabric_version}/\$basearch",
         /5.?/ => "http://repo.vmware.com/pub/rhel5/vfabric/${vfabric_version}/\$basearch",
       }
 
@@ -37,10 +38,10 @@ class hyperic::agent (
         gpgcheck => '0',
       }
 
-      Yumrepo["vfabric-${vfabric_version}"] -> Package['vfabric-hyperic-agent']
+      Yumrepo["vfabric-${vfabric_version}"] -> Package[$hyperic_package_name]
     }
 
-    package { 'vfabric-hyperic-agent':
+    package { $hyperic_package_name:
       ensure => installed,
     }
 
@@ -83,9 +84,9 @@ class hyperic::agent (
     }
 
     #Relationships
-    Package[$unix_jdk_package]                                    ->  Package['vfabric-hyperic-agent']
-    Package['vfabric-hyperic-agent']                              ->  File['/etc/init.d/hyperic-hqee-agent']
-    Package['vfabric-hyperic-agent']                              ~>  Exec['delete_initial_properties_file']
+    Package[$unix_jdk_package]                                    ->  Package[$hyperic_package_name]
+    Package[$hyperic_package_name]                                ->  File['/etc/init.d/hyperic-hqee-agent']
+    Package[$hyperic_package_name]                                ~>  Exec['delete_initial_properties_file']
     Exec['delete_initial_properties_file']                        ->  File['/opt/hyperic/hyperic-hqee-agent/conf/agent.properties']
     File['/etc/init.d/hyperic-hqee-agent']                        ~>  Service['hyperic-hqee-agent']
     File['/opt/hyperic/hyperic-hqee-agent/conf/agent.properties'] ~>  Service['hyperic-hqee-agent']
