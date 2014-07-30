@@ -26,11 +26,11 @@ class hyperic::agent (
 
     if $use_vmware_repo {
 
-      $yumrepo_url = $::operatingsystemrelease ?vfabric/$ {
-        /6.?/ => "http://repo.vmware.com/pub/rhel6/{vfabric_version}/\$basearch",
+       $yumrepo_url = $::operatingsystemrelease ? {
+        /6.?/ => "http://repo.vmware.com/pub/rhel6/vfabric/${vfabric_version}/\$basearch",
         /5.?/ => "http://repo.vmware.com/pub/rhel5/vfabric/${vfabric_version}/\$basearch",
       }
-
+      
       yumrepo { "vfabric-${vfabric_version}":
         baseurl  => $yumrepo_url,
         descr    => "VMware vFabric ${vfabric_version} - \$basearch",
