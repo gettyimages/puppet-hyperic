@@ -75,7 +75,7 @@ class hyperic::agent (
     exec { "set_permissions":
       command  => "/bin/chown -R ${agent_user}:${agent_group} /opt/hyperic",
       require  => [ File["/opt/hyperic/hyperic-hqee-agent/conf/agent.properties"],
-                   Package["vfabric-hyperic-agent"] ]
+                   Package[$hyperic_package_name] ]
     }
 
     service { 'hyperic-hqee-agent':
