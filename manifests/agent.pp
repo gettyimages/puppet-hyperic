@@ -49,7 +49,7 @@ class hyperic::agent (
     exec { 'delete_initial_properties_file':
       command     => '/bin/rm -f /opt/hyperic/hyperic-hqee-agent/conf/agent.properties',
       refreshonly => true,
-      onlyif      => '/usr/bin/test ! -f /opt/hyperic/hyperic-hqee-agent/conf/agent.scu',
+      unless      => "/bin/grep -i 'puppet' /opt/hyperic/hyperic-hqee-agent/conf/agent.properties",
     }
 
     ensure_packages([$unix_jdk_package])
