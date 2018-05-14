@@ -3,41 +3,45 @@
 #
 class hyperic::agent (
   $use_vmware_repo        = false,
-  $setup_server           = 'localhost',
-  $setup_port             = '7080' ,
-  $setup_sslport          = '7443',
+  $setup_camip            = 'localhost',
+  $setup_camport          = '7080' ,
+  $setup_camsslport       = '7443',
   $setup_login            = 'hqadmin',
   $setup_password         = 'hqadmin',
   $setup_unidirectional   = 'No',
   $setup_secure           = 'Yes',
-  $setup_ip               = '*default*',
-  $setup_port             = '*default*',
-  $setup_resetuptoken     = 'no',
+  $setup_agentip          = '*default*',
+  $setup_agentport        = '*default*',
+  $setup_resetuptokens    = 'no',
   $setup_unverifiedcerts  = 'yes',
   $java_home              = '/usr/lib/jvm/jre',
   $unix_jdk_package       = 'java-1.7.0-openjdk-devel',
+  $vfabric_version        = '5.3',
+  $agent_user             = 'hyperic',
+  $agent_group            = 'vfabric',
+  $hyperic_package_name   = 'vfabric-hyperic-agent', # Change to vcenter-hyperic-agent in newer versions
 ) {
 
   if $::osfamily == 'RedHat' or $::operatingsystem == 'amazon' {
 
     if $use_vmware_repo {
 
-      $yumrepo_url = $::operatingsystemrelease ? {
-        /6.?/ => 'http://repo.vmware.com/pub/rhel6/vfabric/5.3/$basearch',
-        /5.?/ => 'http://repo.vmware.com/pub/rhel5/vfabric/5.3/$basearch',
+       $yumrepo_url = $::operatingsystemrelease ? {
+        /6.?/ => "http://repo.vmware.com/pub/rhel6/vfabric/${vfabric_version}/\$basearch",
+        /5.?/ => "http://repo.vmware.com/pub/rhel5/vfabric/${vfabric_version}/\$basearch",
       }
-
-      yumrepo { 'vfabric-5.3':
+      
+      yumrepo { "vfabric-${vfabric_version}":
         baseurl  => $yumrepo_url,
-        descr    => 'VMware vFabric 5.3 - $basearch',
+        descr    => "VMware vFabric ${vfabric_version} - \$basearch",
         enabled  => '1',
         gpgcheck => '0',
       }
 
-      Yumrepo['vfabric-5.3'] -> Package['vfabric-hyperic-agent']
+      Yumrepo["vfabric-${vfabric_version}"] -> Package[$hyperic_package_name]
     }
 
-    package { 'vfabric-hyperic-agent':
+    package { $hyperic_package_name:
       ensure => installed,
     }
 
@@ -45,7 +49,7 @@ class hyperic::agent (
     exec { 'delete_initial_properties_file':
       command     => '/bin/rm -f /opt/hyperic/hyperic-hqee-agent/conf/agent.properties',
       refreshonly => true,
-      onlyif      => '/usr/bin/test ! -f /opt/hyperic/hyperic-hqee-agent/conf/agent.scu',
+      unless      => "/bin/grep -i 'puppet' /opt/hyperic/hyperic-hqee-agent/conf/agent.properties",
     }
 
     ensure_packages([$unix_jdk_package])
@@ -61,20 +65,28 @@ class hyperic::agent (
     file { '/opt/hyperic/hyperic-hqee-agent/conf/agent.properties':
       ensure  => file,
       replace => false,
-      owner   => hyperic,
-      group   => vfabric,
+      owner   => $agent_user,
+      group   => $agent_group,
       mode    => '0644',
       content => template("${module_name}/agent.properties.erb"),
     }
 
+    # ensure permissions are correct
+    exec { "set_permissions":
+      command  => "/bin/chown -R ${agent_user}:${agent_group} /opt/hyperic",
+      require  => [ File["/opt/hyperic/hyperic-hqee-agent/conf/agent.properties"],
+                   Package[$hyperic_package_name] ]
+    }
+
     service { 'hyperic-hqee-agent':
-      ensure  => running,
+      ensure  => stopped,
+      require  => Exec["set_permissions"]
     }
 
     #Relationships
-    Package[$unix_jdk_package]                                    ->  Package['vfabric-hyperic-agent']
-    Package['vfabric-hyperic-agent']                              ->  File['/etc/init.d/hyperic-hqee-agent']
-    Package['vfabric-hyperic-agent']                              ~>  Exec['delete_initial_properties_file']
+    Package[$unix_jdk_package]                                    ->  Package[$hyperic_package_name]
+    Package[$hyperic_package_name]                                ->  File['/etc/init.d/hyperic-hqee-agent']
+    Package[$hyperic_package_name]                                ~>  Exec['delete_initial_properties_file']
     Exec['delete_initial_properties_file']                        ->  File['/opt/hyperic/hyperic-hqee-agent/conf/agent.properties']
     File['/etc/init.d/hyperic-hqee-agent']                        ~>  Service['hyperic-hqee-agent']
     File['/opt/hyperic/hyperic-hqee-agent/conf/agent.properties'] ~>  Service['hyperic-hqee-agent']

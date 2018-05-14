@@ -20,21 +20,23 @@
 
 export JAVA_HOME=<%= @java_home %>
 AGENT_DIR=/opt/hyperic/hyperic-hqee-agent/bin/hq-agent.sh
+AGENT_USER=<%= @agent_user %>
+
 case "$1" in
   start)
  printf "Starting the hyperic agent...\n"
- $AGENT_DIR start
+ /bin/su $AGENT_USER $AGENT_DIR start
 ;;
   stop)
  printf "Stopping the hyperic agent...\n"
- $AGENT_DIR stop
+ /bin/su $AGENT_USER $AGENT_DIR stop
 ;;
   restart)
  printf "Restarting the hyperic agent...\n"
- $AGENT_DIR restart
+ /bin/su $AGENT_USER $AGENT_DIR restart
 ;;
  status)
- $AGENT_DIR status
+ /bin/su $AGENT_USER $AGENT_DIR status
 ;;
   *)
     echo "Usage: $0 {start|stop|restart|status}"
